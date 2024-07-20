@@ -10,8 +10,9 @@ s = Scrollbar(c,orient=VERTICAL,command=c.yview)
 s.pack(side=RIGHT,fill=Y)
 c.config(yscrollcommand=s.set)
 f.bind('<Configure>',lambda _:c.config(scrollregion=c.bbox(ALL)))
+c.bind('<MouseWheel>',lambda e:c.yview(SCROLL,e.delta,UNITS))
 
 for i in range(200):
-    Button(f).pack()
+    Button(f,command=lambda:c.yview_moveto(1)).pack()
 
 root.mainloop()
