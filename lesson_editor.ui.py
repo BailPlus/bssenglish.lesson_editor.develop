@@ -34,8 +34,10 @@ c.create_window(0,0,window=f2)
 bar = Scrollbar(c,orient=VERTICAL,command=c.yview)
 bar.pack(side=RIGHT,fill=Y)
 c.config(yscrollcommand=bar.set)
-f2.bind('<Configure>',lambda _:c.config(scrollregion=c.bbox(ALL)))
-
+f2.bind_all('<Configure>',lambda _:c.config(scrollregion=c.bbox(ALL)))
+c.bind_all('<Button-4>',lambda _:c.yview_scroll(-1,UNITS))  # linux鼠标上键
+c.bind_all('<Button-5>',lambda _:c.yview_scroll(1,UNITS))   # linux鼠标下键
+c.bind('<MouseWheel>',lambda e:c.yview_scroll(e.delta,UNITS))
 
 Button(root,text='+',command=add).pack(side=BOTTOM)
 root.mainloop()
