@@ -76,6 +76,7 @@ filename_label = Label(filename_frame,text=f'当前文件：{filename}')
 filename_label.grid(row=0,column=0)
 Button(filename_frame,text='打开',command=openfile).grid(row=0,column=1)
 Button(filename_frame,text='保存',command=save).grid(row=0,column=2)
+Button(filename_frame,text='另存为',command=lambda:save(True)).grid(row=0,column=3)
 lessoninfo_frame = Frame(root);lessoninfo_frame.pack()  # 课程基本信息
 Label(lessoninfo_frame,text='简称').grid(row=1,column=0)
 name_entry = Entry(lessoninfo_frame)
