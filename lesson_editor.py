@@ -58,7 +58,6 @@ issaveas(bool):是否为另存为模式'''
     words = []
     for i in word_entry_lst:
         word = '\t'.join((j.get() for j in i[:3]))
-        print(word)
         words.append(word)
     with open(filename,'w',encoding='utf-8') as file:
         file.write(libfile.LESSON_FILE_HEADER)  # 文件头
