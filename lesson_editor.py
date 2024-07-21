@@ -1,8 +1,9 @@
 from tkinter import *
 from tkinter import filedialog
-import libfile
+from tkinter import messagebox
+import libfile,libclass
 
-def add(*_):
+def add(word:libclass.Word=None):
     '''添加单词条目'''
     row = len(word_entry_lst)
     wordent = Entry(words_frame);wordent.grid(row=row,column=0)
@@ -10,6 +11,10 @@ def add(*_):
     tranent = Entry(words_frame);tranent.grid(row=row,column=2)
     delbtn = Button(words_frame,text='-');delbtn.grid(row=row,column=3)
     c.yview_moveto(1)   # 滚动到底部
+    if word:
+        wordent.insert(0,word.word)
+        pronent.insert(0,word.pronounce)
+        tranent.insert(0,word.trans)
     tup = (wordent,pronent,tranent,delbtn)
     delbtn.config(command=lambda:delete(tup))
     word_entry_lst.append(tup)
@@ -21,6 +26,15 @@ tup(tuple):包含单词条目所有控件的元组'''
     word_entry_lst.remove(tup)
 def openfile():
     global filename
+    if word_entry_lst:  # 编辑器中有内容
+        if messagebox.askyesno('警告','此操作将会清空编辑器中的所有内容，是否继续？',parent=root):
+            print(f'总数：{len(word_entry_lst)}')
+            for i in word_entry_lst:
+                print('请求删除')
+                delete(i)
+            print(word_entry_lst)
+        else:   # 用户不同意
+            return
     filename = filedialog.askopenfilename(parent=root,title='打开')
     lesson = libfile.readfile(filename)
     filename_label.config(text=f'当前文件：{filename}')
@@ -30,7 +44,8 @@ def openfile():
     fullname_entry.insert(0,lesson.fullname)
     auchor_entry.delete(0,END)
     auchor_entry.insert(0,lesson.author)
-    
+    for i in lesson.words:
+        add(i)
 
 word_entry_lst = [] # 所有单词条目
 filename:str = None
@@ -38,7 +53,7 @@ filename:str = None
 #配置界面
 root = Tk()
 root.title('课程文件编辑器')
-root.bind('<Return>',add)
+root.bind_all('<Return>',lambda _:add())
 filename_frame = Frame(root);filename_frame.pack()   # 界面第一行
 filename_label = Label(filename_frame,text=f'当前文件：{filename}')
 filename_label.grid(row=0,column=0)
