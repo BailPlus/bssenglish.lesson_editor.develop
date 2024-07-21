@@ -28,21 +28,18 @@ def openfile():
     global filename
     if word_entry_lst:  # 编辑器中有内容
         if messagebox.askyesno('警告','此操作将会清空编辑器中的所有内容，是否继续？',parent=root):
-            print(f'总数：{len(word_entry_lst)}')
-            for i in word_entry_lst:
-                print('请求删除')
-                delete(i)
-            print(word_entry_lst)
+            for i in range(len(word_entry_lst)):
+                delete(word_entry_lst[0])
+            name_entry.delete(0,END)
+            fullname_entry.delete(0,END)
+            auchor_entry.delete(0,END)
         else:   # 用户不同意
             return
     filename = filedialog.askopenfilename(parent=root,title='打开')
     lesson = libfile.readfile(filename)
     filename_label.config(text=f'当前文件：{filename}')
-    name_entry.delete(0,END)
     name_entry.insert(0,lesson.name)
-    fullname_entry.delete(0,END)
     fullname_entry.insert(0,lesson.fullname)
-    auchor_entry.delete(0,END)
     auchor_entry.insert(0,lesson.author)
     for i in lesson.words:
         add(i)
