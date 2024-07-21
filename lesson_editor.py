@@ -24,6 +24,12 @@ def openfile():
     filename = filedialog.askopenfilename(parent=root,title='打开')
     lesson = libfile.readfile(filename)
     filename_label.config(text=f'当前文件：{filename}')
+    name_entry.delete(0,END)
+    name_entry.insert(0,lesson.name)
+    fullname_entry.delete(0,END)
+    fullname_entry.insert(0,lesson.fullname)
+    auchor_entry.delete(0,END)
+    auchor_entry.insert(0,lesson.author)
     
 
 word_entry_lst = [] # 所有单词条目
