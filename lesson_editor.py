@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter import filedialog
 from tkinter import messagebox
-import libfile,libclass
+import libfile,libclass,json
 
 def add(word:libclass.Word=None):
     '''添加单词条目'''
@@ -32,7 +32,7 @@ def openfile():
                 delete(word_entry_lst[0])
             name_entry.delete(0,END)
             fullname_entry.delete(0,END)
-            auchor_entry.delete(0,END)
+            author_entry.delete(0,END)
         else:   # 用户不同意
             return
     filename = filedialog.askopenfilename(parent=root,title='打开')
@@ -40,9 +40,30 @@ def openfile():
     filename_label.config(text=f'当前文件：{filename}')
     name_entry.insert(0,lesson.name)
     fullname_entry.insert(0,lesson.fullname)
-    auchor_entry.insert(0,lesson.author)
+    author_entry.insert(0,lesson.author)
     for i in lesson.words:
         add(i)
+def save(issaveas:bool=False):
+    '''保存文件
+issaveas(bool):是否为另存为模式'''
+    global filename
+    if (issaveas) or (not filename):
+        filename = filedialog.asksaveasfilename(parent=root,title='另存为')
+    info = {
+        'name':name_entry.get(),
+        'fullname':fullname_entry.get(),
+        'author':author_entry.get(),
+        'file_version':4
+    }
+    words = []
+    for i in word_entry_lst:
+        word = '\t'.join((j.get() for j in i[:3]))
+        print(word)
+        words.append(word)
+    with open(filename,'w',encoding='utf-8') as file:
+        file.write(libfile.LESSON_FILE_HEADER)  # 文件头
+        file.write(json.dumps(info)+'\n')   # 信息头
+        file.write('\n'.join(words))
 
 word_entry_lst = [] # 所有单词条目
 filename:str = None
@@ -55,7 +76,7 @@ filename_frame = Frame(root);filename_frame.pack()   # 界面第一行
 filename_label = Label(filename_frame,text=f'当前文件：{filename}')
 filename_label.grid(row=0,column=0)
 Button(filename_frame,text='打开',command=openfile).grid(row=0,column=1)
-Button(filename_frame,text='保存').grid(row=0,column=2)
+Button(filename_frame,text='保存',command=save).grid(row=0,column=2)
 lessoninfo_frame = Frame(root);lessoninfo_frame.pack()  # 课程基本信息
 Label(lessoninfo_frame,text='简称').grid(row=1,column=0)
 name_entry = Entry(lessoninfo_frame)
@@ -64,8 +85,8 @@ Label(lessoninfo_frame,text='全称').grid(row=2,column=0)
 fullname_entry = Entry(lessoninfo_frame)
 fullname_entry.grid(row=2,column=1)
 Label(lessoninfo_frame,text='作者').grid(row=3,column=0)
-auchor_entry = Entry(lessoninfo_frame)
-auchor_entry.grid(row=3,column=1)
+author_entry = Entry(lessoninfo_frame)
+author_entry.grid(row=3,column=1)
 c = Canvas(root)    # 中间主体
 c.pack(fill=BOTH,expand=True)
 words_frame = Frame(c)
