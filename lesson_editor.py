@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter import filedialog
 from tkinter import messagebox
-import libfile,libclass,json
+import libfile,libclass,json,sys
 
 def add(word:libclass.Word=None):
     '''添加单词条目'''
@@ -35,7 +35,8 @@ def openfile():
             author_entry.delete(0,END)
         else:   # 用户不同意
             return
-    filename = filedialog.askopenfilename(parent=root,title='打开')
+    if not filename:
+        filename = filedialog.askopenfilename(parent=root,title='打开')
     lesson = libfile.readfile(filename)
     filename_label.config(text=f'当前文件：{filename}')
     name_entry.insert(0,lesson.name)
@@ -67,7 +68,7 @@ issaveas(bool):是否为另存为模式'''
 word_entry_lst = [] # 所有单词条目
 filename:str = None
 
-#配置界面
+# 配置界面
 root = Tk()
 root.title('课程文件编辑器')
 root.bind_all('<Return>',lambda _:add())
@@ -101,6 +102,9 @@ https://www.codenong.com/17355902'''
 c.bind_all('<Button-4>',lambda _:c.yview_scroll(-1,UNITS))  # linux鼠标上键
 c.bind_all('<Button-5>',lambda _:c.yview_scroll(1,UNITS))   # linux鼠标下键
 c.bind_all('<MouseWheel>',lambda e:c.yview_scroll(1,UNITS) if e.delta<0 else c.yview_scroll(-1,UNITS))  #windows/mac鼠标滚轮
-
 Button(root,text='+',command=add).pack(side=BOTTOM)
+# 处理参数
+if len(sys.argv) == 2:
+    filename = sys.argv[1]
+    openfile()
 root.mainloop()
